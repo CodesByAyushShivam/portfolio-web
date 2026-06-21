@@ -2,12 +2,12 @@
     "projects": [
         {
             "name": "Students Management System Website",
-            "gitub": "https://github.com/CodesByAyushShivam/Students-Management-System-Website",
+            "github": "https://github.com/CodesByAyushShivam/Students-Management-System-Website",
             "live": "https://ace-students-portal.pages.dev"
         },
         {
             "name": "Shop Bill Management System",
-            "gitub": "https://github.com/CodesByAyushShivam/Shop-Management-System-using-C-"
+            "github": "https://github.com/CodesByAyushShivam/Shop-Management-System-using-C-"
         }
     ]
 }

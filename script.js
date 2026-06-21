@@ -442,8 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
       for (let i = 0; i < projects.length; i++) {
         const proj = projects[i];
         
-        // Extract owner and repo from 'gitub' url
-        const cleanUrl = proj.gitub.replace('https://github.com/', '').replace(/\/$/, '');
+        // Extract owner and repo from 'github' url
+        const cleanUrl = proj.github.replace('https://github.com/', '').replace(/\/$/, '');
         const urlParts = cleanUrl.split('/');
         const owner = urlParts[0];
         const repo = urlParts[1];
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <p class="proj-desc" style="color: var(--text-muted);">Retrieving repository details from GitHub...</p>
             <div class="proj-tags" style="min-height: 25px;"></div>
             <div class="proj-actions">
-              <a href="${proj.gitub}" target="_blank" rel="noopener noreferrer" class="proj-btn proj-btn-outline">
+              <a href="${proj.github}" target="_blank" rel="noopener noreferrer" class="proj-btn proj-btn-outline">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                 GitHub
               </a>
