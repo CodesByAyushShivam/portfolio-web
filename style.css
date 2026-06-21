@@ -1620,3 +1620,131 @@ footer {
   transform: scale(1.02);
   filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.25));
 }
+
+/* --- Print Stylesheet --- */
+@media print {
+  /* Reset general colors and background for clean printing */
+  html, body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    font-size: 11pt !important;
+  }
+
+  /* Reset all reveal elements so they are fully visible */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* Hide decorative elements, backgrounds, and interactive UI controls */
+  #starfield,
+  .nebula-glow,
+  #header,
+  .hero-buttons,
+  .modal-close-btn,
+  .modal,
+  .theme-toggle,
+  .scroll-progress,
+  .mobile-menu-btn,
+  form button[type="submit"],
+  .contact-info .social-links,
+  .proj-btn {
+    display: none !important;
+  }
+
+  /* Convert dark glass cards to clean white blocks with subtle borders */
+  .glass-card,
+  .timeline-content,
+  .skill-category,
+  .project-card,
+  .github-stat-card,
+  .contact-info-card,
+  .contact-form-card {
+    background: #ffffff !important;
+    border: 1px solid #dddddd !important;
+    box-shadow: none !important;
+    color: #111111 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Adjust typography for readability on paper */
+  h1, h2, h3, h4, h5, h6 {
+    color: #000000 !important;
+    text-shadow: none !important;
+  }
+
+  p, span, li, a, td, th {
+    color: #333333 !important;
+    text-shadow: none !important;
+  }
+
+  a {
+    text-decoration: none !important;
+    color: #0066cc !important;
+  }
+
+  /* Adjust vertical timeline for printing */
+  .timeline::after {
+    background: #cccccc !important;
+  }
+  
+  .timeline-dot {
+    background: #333333 !important;
+    border-color: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  .timeline-score {
+    background: #eeeeee !important;
+    border: 1px solid #cccccc !important;
+    color: #333333 !important;
+    box-shadow: none !important;
+  }
+
+  /* Layout adjustments for page printing */
+  section {
+    padding: 1.5rem 0 !important;
+    page-break-inside: auto;
+  }
+
+  .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Grid optimization for print layout */
+  .about-grid,
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  .projects-grid,
+  .github-stats-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1.5rem !important;
+  }
+
+  .github-chart-card {
+    grid-column: span 2 !important;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    background: #ffffff !important;
+    border: 1px solid #cccccc !important;
+    color: #111111 !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 1.5cm 1cm;
+  }
+}
