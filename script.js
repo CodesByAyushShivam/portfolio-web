@@ -200,23 +200,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // ==========================================
-  // 4. Scroll Reveal & Skill Progress Animation
+  // 4. Scroll Reveal Animations
   // ==========================================
   const revealElements = document.querySelectorAll('.reveal');
-  const skillBars = document.querySelectorAll('.skill-progress-bar');
 
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('active');
-        
-        // If the entry is a skill category card, trigger child skill progress animations
-        if (entry.target.classList.contains('skill-category')) {
-          const barsInCard = entry.target.querySelectorAll('.skill-progress-bar');
-          barsInCard.forEach(bar => {
-            bar.style.width = bar.getAttribute('data-level');
-          });
-        }
       }
     });
   }, {
