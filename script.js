@@ -424,6 +424,145 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ==========================================
+  // 7. Dynamic GitHub Projects Fetching
+  // ==========================================
+  async function loadProjects() {
+    const projectsGrid = document.getElementById('projects-grid');
+    if (!projectsGrid) return;
+    
+    try {
+      const response = await fetch('data/projects.json');
+      if (!response.ok) throw new Error("Failed to load projects.json");
+      const data = await response.json();
+      const projects = data.projects;
+      
+      projectsGrid.innerHTML = ''; // Clear spinner
+      
+      for (let i = 0; i < projects.length; i++) {
+        const proj = projects[i];
+        
+        // Extract owner and repo from 'gitub' url
+        const cleanUrl = proj.gitub.replace('https://github.com/', '').replace(/\/$/, '');
+        const urlParts = cleanUrl.split('/');
+        const owner = urlParts[0];
+        const repo = urlParts[1];
+        
+        const card = document.createElement('div');
+        card.className = `project-card glass-card reveal reveal-delay-${i % 3}`;
+        
+        // Render initial card layout with loading states
+        card.innerHTML = `
+          <div class="proj-img-container">
+            <div class="proj-overlay-glow"></div>
+            <span class="proj-badge">Fetching...</span>
+            <div style="display:flex; justify-content:center; align-items:center; height:100%;"><div class="spinner" style="border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #ff4b2b; border-radius:50%; width:30px; height:30px; animation: spin 1s linear infinite;"></div></div>
+          </div>
+          <div class="proj-content">
+            <h3>${proj.name}</h3>
+            <p class="proj-desc" style="color: var(--text-muted);">Retrieving repository details from GitHub...</p>
+            <div class="proj-tags" style="min-height: 25px;"></div>
+            <div class="proj-actions">
+              <a href="${proj.gitub}" target="_blank" rel="noopener noreferrer" class="proj-btn proj-btn-outline">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                GitHub
+              </a>
+              ${proj.live ? `<a href="${proj.live}" target="_blank" rel="noopener noreferrer" class="proj-btn proj-btn-primary">Live Demo</a>` : ''}
+            </div>
+          </div>
+        `;
+        
+        projectsGrid.appendChild(card);
+        revealObserver.observe(card);
+        
+        // Fetch details from GitHub API asynchronously
+        fetchRepoDetails(owner, repo, card, proj);
+      }
+    } catch (err) {
+      console.error("Error loading projects.json:", err);
+      projectsGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #f87171;">
+          <p>Failed to load projects. Please verify your connection.</p>
+        </div>
+      `;
+    }
+  }
+
+  async function fetchRepoDetails(owner, repo, cardElement, proj) {
+    try {
+      const [repoRes, langRes] = await Promise.all([
+        fetch(`https://api.github.com/repos/${owner}/${repo}`),
+        fetch(`https://api.github.com/repos/${owner}/${repo}/languages`)
+      ]);
+      
+      if (!repoRes.ok) throw new Error(`Failed to fetch repo ${owner}/${repo}`);
+      
+      const repoData = await repoRes.json();
+      const langData = await langRes.json();
+      
+      // OG image
+      const ogImgUrl = `https://opengraph.githubassets.com/1/${owner}/${repo}`;
+      
+      // Description
+      const description = repoData.description || "No description provided.";
+      
+      // Calculate language percentages
+      let totalBytes = 0;
+      for (const bytes of Object.values(langData)) {
+        totalBytes += bytes;
+      }
+      
+      let languageTags = [];
+      let mainLanguage = "Code";
+      let maxBytes = 0;
+      
+      for (const [lang, bytes] of Object.entries(langData)) {
+        if (bytes > maxBytes) {
+          maxBytes = bytes;
+          mainLanguage = lang;
+        }
+        const pct = totalBytes > 0 ? ((bytes / totalBytes) * 100).toFixed(1) : 0;
+        languageTags.push(`<span class="proj-tag">${lang} (${pct}%)</span>`);
+      }
+      
+      if (languageTags.length === 0 && repoData.language) {
+        languageTags.push(`<span class="proj-tag">${repoData.language}</span>`);
+        mainLanguage = repoData.language;
+      }
+      
+      // Update HTML content
+      const imgContainer = cardElement.querySelector('.proj-img-container');
+      const descElement = cardElement.querySelector('.proj-desc');
+      const tagsContainer = cardElement.querySelector('.proj-tags');
+      
+      imgContainer.innerHTML = `
+        <div class="proj-overlay-glow"></div>
+        <span class="proj-badge">${mainLanguage}</span>
+        <img src="${ogImgUrl}" alt="${proj.name}" class="proj-img" loading="lazy">
+      `;
+      
+      descElement.textContent = description;
+      descElement.style.color = ''; // Reset color
+      tagsContainer.innerHTML = languageTags.join('');
+      
+    } catch (err) {
+      console.error(`Error populating details for ${owner}/${repo}:`, err);
+      // Fallback display
+      const imgContainer = cardElement.querySelector('.proj-img-container');
+      const descElement = cardElement.querySelector('.proj-desc');
+      
+      imgContainer.innerHTML = `
+        <div class="proj-overlay-glow"></div>
+        <span class="proj-badge">Repository</span>
+        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500'><rect width='800' height='500' fill='%230b071a'/><text x='50%25' y='50%25' fill='%23746d88' font-family='sans-serif' font-size='24' dy='.3em' text-anchor='middle'>GitHub Repo</text></svg>" alt="Repository" class="proj-img" loading="lazy">
+      `;
+      descElement.textContent = "Offline or rate-limited. Click the buttons below to open GitHub.";
+    }
+  }
+
+  // Trigger load projects
+  loadProjects();
+
 });
 
 // Spinner CSS Animation injected dynamically
