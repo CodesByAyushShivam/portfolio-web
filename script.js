@@ -563,6 +563,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Trigger load projects
   loadProjects();
 
+  // Scroll GitHub Contributions Chart to the far right on load
+  const githubChartImg = document.querySelector('.github-chart-wrapper img');
+  if (githubChartImg) {
+    const scrollChartToRight = () => {
+      const wrapper = document.querySelector('.github-chart-wrapper');
+      if (wrapper) {
+        wrapper.scrollLeft = wrapper.scrollWidth;
+      }
+    };
+    
+    // Scroll immediately if already loaded
+    if (githubChartImg.complete) {
+      scrollChartToRight();
+    } else {
+      githubChartImg.addEventListener('load', scrollChartToRight);
+    }
+  }
+
 });
 
 // Spinner CSS Animation injected dynamically
