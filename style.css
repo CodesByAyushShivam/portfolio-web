@@ -1378,6 +1378,15 @@ footer {
     font-size: 2.5rem;
   }
   
+  .hero {
+    height: auto;
+    min-height: 100vh;
+    padding-top: 140px;
+    padding-bottom: 60px;
+    display: flex;
+    align-items: center;
+  }
+  
   .hero .container {
     grid-template-columns: 1fr;
     text-align: center;
@@ -1449,6 +1458,19 @@ footer {
   
   .typewriter-text {
     font-size: 1.2rem;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 320px;
+    margin: 0 auto;
+    gap: 1rem;
+  }
+  
+  .hero-buttons .btn {
+    width: 100%;
+    justify-content: center;
   }
   
   /* Mobile Navigation Bar */
@@ -1526,3 +1548,20 @@ footer {
     gap: 1.5rem;
   }
 }
+
+/* Very Small Mobile Screens (< 480px) */
+@media (max-width: 480px) {
+  .profile-glow {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .hero h1 {
+    font-size: 2.4rem;
+  }
+  
+  .timeline-content {
+    padding: 1.5rem;
+  }
+}
+
